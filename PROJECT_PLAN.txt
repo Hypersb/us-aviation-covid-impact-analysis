@@ -1,0 +1,265 @@
+U.S. AVIATION INDUSTRY - BEFORE VS. DURING COVID-19
+====================================================
+
+Project summary
+---------------
+This project is a comprehensive comparative analysis of U.S. commercial
+aviation operations in 2019 and 2020.
+
+Research question
+-----------------
+How did the COVID-19 pandemic coincide with changes in U.S. aviation
+operations between 2019 and 2020, and which airlines, airports, routes, and
+time periods experienced the greatest disruption?
+
+This analysis is not simply a comparison of two datasets. It investigates an
+industry-wide disruption through operational data.
+
+Research dimensions
+-------------------
+1. Flight activity
+   How did observed flight activity differ between 2019 and 2020?
+
+2. Cancellations
+   When did cancellations increase, and which airlines and airports
+   experienced the highest rates?
+
+3. Delays and reliability
+   How did departure delays, arrival delays, and on-time performance change?
+
+4. Airline performance
+   Which carriers experienced the largest operational changes?
+
+5. Airport and route networks
+   Which origin-destination routes and airports showed the largest changes
+   in sampled activity and reliability?
+
+Important data limitation
+-------------------------
+The current datasets are samples, not the complete national flight
+population. Actual nationwide flight-volume changes cannot be estimated
+without complete official flight counts or a verified representative sample.
+
+Real-world purpose
+------------------
+This project is designed as an aviation analytics study for organizations
+such as airlines, airport authorities, aviation consulting companies, network
+planning teams, and risk management teams.
+
+Potential business applications
+-------------------------------
+
+Airline executives - operational resilience
+  - Identify periods with severe cancellations.
+  - Compare operational changes across carriers.
+  - Evaluate how operational reliability changed during the crisis.
+  - Support disruption planning and operational contingency strategies.
+
+Airport authorities - capacity planning
+  - Analyze airports with major changes in sampled activity.
+  - Compare cancellation and delay patterns.
+  - Inform staffing, gate allocation, and contingency planning.
+
+Network planners - route analysis
+  - Compare origin-destination route activity.
+  - Evaluate route-level operational reliability.
+  - Identify vulnerable routes for future network planning.
+
+Risk management teams - crisis preparedness
+  - Study the timing and severity of operational disruption.
+  - Analyze operational changes before and during the crisis.
+  - Develop more informed responses to future emergencies.
+
+These are potential uses of the analysis, not benefits claimed to have been
+achieved without implementation and validation.
+
+What we are building
+--------------------
+We are building an Aviation Impact Intelligence Dashboard: a polished,
+multi-page analytics application for comparing U.S. aviation operations
+between 2019 and 2020.
+
+Dashboard period
+  2019-2020
+
+Dashboard sections
+------------------
+
+01. Executive Overview
+    Key metrics and year-over-year changes.
+
+02. Flight Activity
+    Monthly trends and activity patterns.
+
+03. Cancellation Intelligence
+    Cancellation timing, rates, and reasons.
+
+04. Airline Comparison
+    Carrier performance and rankings.
+
+05. Airport and Route Analysis
+    Origin, destination, and route-level patterns.
+
+06. Delays and Reliability
+    Departure, arrival, and on-time performance.
+
+Dashboard capabilities
+---------------------
+
+Executive KPI overview
+  - Total sampled flights.
+  - Total cancellations.
+  - Cancellation rates.
+  - Average delays.
+  - On-time percentage.
+  - Year-over-year changes.
+
+Monthly trend comparison
+  - Compare 2019 and 2020 monthly activity.
+  - Identify the months with the greatest observed changes.
+  - Show year-over-year differences.
+
+Airline comparison
+  - Search for and select airlines.
+  - Compare airline activity, cancellations, delays, and reliability.
+  - Rank carriers by operational performance and change.
+
+Airport comparison
+  - Find airports with the highest cancellation rates.
+  - Find airports with the highest delay rates.
+  - Compare sampled airport activity between the two years.
+
+Route explorer
+  - Examine origin-destination pairs.
+  - Compare route activity between 2019 and 2020.
+  - Evaluate route-level reliability and disruption patterns.
+
+Cancellation reasons
+  - Compare recorded cancellation categories.
+  - Analyze when and where cancellation reasons changed.
+
+Delay distribution
+  - Explore average and median delays.
+  - Identify severe delays.
+  - Compare departure and arrival delay patterns.
+
+Interactive filters
+  - Year.
+  - Month.
+  - Airline.
+  - Origin.
+  - Destination.
+
+Metric rules
+-----------
+- Distinguish cancelled flights from completed flights.
+- Do not count missing delay measurements as zero.
+- Calculate delay and reliability metrics only from flights with valid
+  measurements.
+- Clearly label metrics based on sampled data.
+- Preserve the distinction between observed flight activity and complete
+  national flight volume.
+
+Development roadmap
+-------------------
+
+Phase 1 - Data audit
+  Deliverable:
+    Validate dates, missing values, duplicates, and sampling limitations.
+  Technology:
+    SQL and Python.
+
+Phase 2 - Analytical modeling
+  Deliverable:
+    Build reusable monthly, airline, airport, route, cancellation, and
+    reliability summaries.
+  Technology:
+    PostgreSQL.
+
+Phase 3 - Data preparation
+  Deliverable:
+    Export validated, dashboard-ready datasets.
+  Technology:
+    Pandas.
+
+Phase 4 - Dashboard development
+  Deliverable:
+    Create six analytical sections with filters and year-over-year
+    comparisons.
+  Technology:
+    Streamlit and Plotly.
+
+Phase 5 - Business findings
+  Deliverable:
+    Write evidence-based conclusions and limitations.
+  Technology:
+    Python and Markdown.
+
+Phase 6 - Portfolio delivery
+  Deliverable:
+    Prepare the GitHub repository, screenshots, documentation, and deployed
+    dashboard.
+  Technology:
+    GitHub and Streamlit Cloud.
+
+Existing project structure
+--------------------------
+
+Data/
+  flights_2019.csv
+  flights_2020.csv
+
+Notebook/
+  analysis.ipynb
+  data_exploration.ipynb
+  final_aviation_analysis.ipynb
+
+Visualization/
+  dashboard/
+    app.py
+  processed_data/
+    airline_summary.csv
+    airport_summary.csv
+    monthly_summary.csv
+
+Analysis goals
+--------------
+The analysis should answer questions such as:
+
+- Which months had the greatest observed cancellation-rate increases
+  compared with the same months in 2019?
+- Which carriers and airports contributed to the observed patterns?
+- Did on-time performance improve or worsen among flights that actually
+  operated?
+- Which routes experienced the greatest changes in sampled activity and
+  reliability?
+- Which periods show the clearest operational disruption?
+
+Evidence standards
+------------------
+Every major conclusion should be supported by:
+
+1. A reproducible query or calculation.
+2. A chart or table.
+3. A numerical result.
+4. A clear explanation of the relevant limitation.
+
+Important interpretation note
+-----------------------------
+Improved on-time performance among surviving flights does not necessarily
+mean that the aviation system became more reliable overall. Cancellations and
+changes in which flights operated can affect the comparison and should be
+considered when interpreting reliability results.
+
+Expected final deliverable
+--------------------------
+A polished Aviation Impact Intelligence Dashboard that:
+
+- Compares sampled U.S. commercial aviation operations in 2019 and 2020.
+- Provides six analytical sections.
+- Includes interactive filters and year-over-year comparisons.
+- Separates cancelled and completed flights.
+- Handles missing delay measurements correctly.
+- Presents evidence-based business findings.
+- Documents sampling limitations and analytical methodology.
+- Is prepared for portfolio delivery and potential deployment.
