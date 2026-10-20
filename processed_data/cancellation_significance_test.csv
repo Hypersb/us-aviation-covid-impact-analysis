@@ -1,0 +1,2 @@
+test,rate_2019,rate_2020,difference_percentage_points,z_score,p_value_two_sided,significant_at_05
+Two-proportion z-test,1.7941776993505114,5.999165536664233,4.2049878373137215,125.30393956674426,0.0,True

@@ -15,6 +15,23 @@ time periods experienced the greatest disruption?
 This analysis is not simply a comparison of two datasets. It investigates an
 industry-wide disruption through operational data.
 
+Reproducible build
+------------------
+The executable source of truth is `analysis_pipeline.py`. From the repository
+root, install `requirements.txt` and run:
+
+    python analysis_pipeline.py
+
+This validates the raw files and writes all summary, business-question,
+statistical, and model outputs to `processed_data/`. The dashboard starts with:
+
+    streamlit run dashboard/app.py
+
+The raw data is sampled. Missing delay fields for cancelled flights are
+expected, while duplicate rows, duplicate schedule keys, invalid cancellation
+values, and invalid cancellation codes are explicitly reported in
+`processed_data/validation_report.json`.
+
 Research dimensions
 -------------------
 1. Flight activity

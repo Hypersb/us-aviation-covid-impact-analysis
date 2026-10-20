@@ -1,164 +1,106 @@
+from __future__ import annotations
+
+import json
 from pathlib import Path
 
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-st.set_page_config(
-    page_title="US Aviation COVID-19 Impact",
-    page_icon="✈️",
-    layout="wide"
-)
-
+st.set_page_config(page_title="U.S. Aviation Disruption Intelligence", page_icon="✈️", layout="wide")
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "processed_data"
 
 
 @st.cache_data
-def load_data():
-    monthly = pd.read_csv(DATA_DIR / "monthly_summary.csv")
-    airlines = pd.read_csv(DATA_DIR / "airline_summary.csv")
-    airports = pd.read_csv(DATA_DIR / "airport_summary.csv")
+def load_outputs() -> dict[str, pd.DataFrame | dict]:
+    names = [
+        "monthly_summary", "airline_summary", "airport_summary", "route_summary",
+        "performance_summary", "a1_route_cancellation_changes", "a2_route_arrival_delay_changes",
+        "a3_cancellation_reason_changes", "a4_monthly_cancellation_reasons",
+        "a5_on_time_severe_delay", "a6_airline_reliability_changes",
+        "a7_march_april_airports", "a7_march_april_routes",
+        "cancellation_confidence_intervals", "cancellation_significance_test", "model_metrics",
+    ]
+    outputs = {name: pd.read_csv(DATA_DIR / f"{name}.csv") for name in names}
+    outputs["validation"] = json.loads((DATA_DIR / "validation_report.json").read_text(encoding="utf-8"))
+    return outputs
 
-    return monthly, airlines, airports
 
+try:
+    data = load_outputs()
+except FileNotFoundError:
+    st.error("Dashboard outputs are missing. Run `python analysis_pipeline.py` from the project root.")
+    st.stop()
 
-monthly_df, airline_df, airport_df = load_data()
+monthly = data["monthly_summary"]
+st.title("U.S. Aviation Disruption Intelligence")
+st.caption("Sampled U.S. flight records: 2019 baseline compared with 2020 disruption period.")
 
+year = st.selectbox("Focus year", [2019, 2020], index=1)
+yearly = monthly[monthly["year"].eq(year)]
+total = int(yearly["total_flights"].sum())
+cancelled = int(yearly["cancelled_flights"].sum())
+rate = cancelled / total * 100 if total else 0
+operated = data["performance_summary"]
+overall_on_time = operated[operated["year"].eq(year)]["on_time_flights"].sum() / operated[operated["year"].eq(year)]["operated_flights"].sum() * 100
 
-# Dashboard heading
-st.title("U.S. Aviation COVID-19 Impact Dashboard")
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("Sampled flights", f"{total:,}")
+col2.metric("Cancelled flights", f"{cancelled:,}")
+col3.metric("Cancellation rate", f"{rate:.2f}%")
+col4.metric("On-time rate", f"{overall_on_time:.2f}%")
 
-st.markdown(
-    "An analysis of sampled U.S. flight cancellations, "
-    "airline performance, and operational delays during 2019–2020."
+tab_overview, tab_entities, tab_business, tab_stats, tab_quality = st.tabs(
+    ["Overview", "Airlines and airports", "Business questions", "Statistics and model", "Data quality"]
 )
+
+with tab_overview:
+    st.subheader("Monthly activity and cancellation rate")
+    fig = px.line(monthly, x="month", y="cancellation_rate", color="year", markers=True,
+                  labels={"cancellation_rate": "Cancellation rate (%)", "month": "Month"})
+    st.plotly_chart(fig, use_container_width=True)
+    performance = data["performance_summary"]
+    fig2 = px.line(performance, x="month", y=["on_time_rate", "severe_delay_rate"], color="year",
+                   labels={"value": "Rate (%)", "variable": "Measure"})
+    st.plotly_chart(fig2, use_container_width=True)
+
+with tab_entities:
+    airline = data["airline_summary"]
+    airline = airline[(airline["year"].eq(year)) & airline["total_flights"].ge(100)].nlargest(15, "cancellation_rate")
+    st.subheader(f"Airlines with highest cancellation rates ({year})")
+    st.plotly_chart(px.bar(airline, x="cancellation_rate", y="airline", orientation="h",
+                           labels={"cancellation_rate": "Cancellation rate (%)"}), use_container_width=True)
+    airport = data["airport_summary"]
+    airport = airport[(airport["year"].eq(year)) & airport["total_flights"].ge(100)].nlargest(15, "cancellation_rate")
+    st.subheader(f"Departure airports with highest cancellation rates ({year})")
+    st.plotly_chart(px.bar(airport, x="cancellation_rate", y="airport", orientation="h",
+                           labels={"cancellation_rate": "Cancellation rate (%)"}), use_container_width=True)
+
+with tab_business:
+    st.subheader("Cancellation reasons")
+    st.dataframe(data["a3_cancellation_reason_changes"], use_container_width=True, hide_index=True)
+    st.subheader("Routes with largest cancellation-rate increases")
+    st.dataframe(data["a1_route_cancellation_changes"].head(20), use_container_width=True, hide_index=True)
+    st.subheader("Routes with largest arrival-delay increases")
+    st.dataframe(data["a2_route_arrival_delay_changes"].head(20), use_container_width=True, hide_index=True)
+    st.subheader("March-April 2020 disruption: airports")
+    st.dataframe(data["a7_march_april_airports"].query("year == 2020").nlargest(20, "cancelled_flights"),
+                 use_container_width=True, hide_index=True)
+
+with tab_stats:
+    st.subheader("Inference")
+    st.dataframe(data["cancellation_confidence_intervals"], use_container_width=True, hide_index=True)
+    st.dataframe(data["cancellation_significance_test"], use_container_width=True, hide_index=True)
+    st.caption("Intervals describe this sampled dataset. The z-test treats records as independent observations; sampling design limits nationwide inference.")
+    st.subheader("Chronological cancellation prediction")
+    st.dataframe(data["model_metrics"], use_container_width=True, hide_index=True)
+    st.caption("Models train on 2019 and test on 2020. PR-AUC and calibration-sensitive Brier score are more informative than accuracy for this imbalanced target.")
+
+with tab_quality:
+    report = data["validation"]
+    st.json(report)
+    st.info("Missing delay fields are expected for cancelled flights. No duplicate rows, duplicate schedule keys, invalid cancellation values, or invalid cancellation codes were found.")
 
 st.divider()
-
-selected_year = st.selectbox(
-    "Select Year",
-    options=[2019, 2020],
-    index=1
-)
-
-filtered_df = monthly_df[
-    monthly_df["year"] == selected_year
-]
-
-
-# KPI calculations
-total_flights = filtered_df["total_flights"].sum()
-cancelled_flights = filtered_df["cancelled_flights"].sum()
-
-cancellation_rate = (
-    cancelled_flights / total_flights * 100
-    if total_flights > 0 else 0
-)
-
-
-col1, col2, col3 = st.columns(3)
-
-col1.metric(
-    "Sampled Flights",
-    f"{total_flights:,}"
-)
-
-col2.metric(
-    "Cancelled Flights",
-    f"{cancelled_flights:,}"
-)
-
-col3.metric(
-    "Cancellation Rate",
-    f"{cancellation_rate:.2f}%"
-)
-
-
-st.subheader("Monthly Flight Cancellation Rates")
-
-fig = px.line(
-    monthly_df,
-    x="month",
-    y="cancellation_rate",
-    color="year",
-    markers=True,
-    title="Monthly Cancellation Rates: 2019 vs 2020",
-    labels={
-        "month": "Month",
-        "cancellation_rate": "Cancellation Rate (%)",
-        "year": "Year"
-    }
-)
-
-fig.update_layout(
-    xaxis=dict(dtick=1),
-    hovermode="x unified"
-)
-
-st.plotly_chart(fig, use_container_width=True)
-
-st.subheader(f"Airline Cancellation Rates — {selected_year}")
-
-filtered_airlines = airline_df[
-    (airline_df["year"] == selected_year)
-    & (airline_df["total_flights"] >= 100)
-].sort_values(
-    "cancellation_rate",
-    ascending=False
-).head(10)
-
-airline_fig = px.bar(
-    filtered_airlines,
-    x="cancellation_rate",
-    y="airline",
-    orientation="h",
-    title="Top 10 Airlines by Cancellation Rate",
-    labels={
-        "cancellation_rate": "Cancellation Rate (%)",
-        "airline": "Airline"
-    }
-)
-
-airline_fig.update_layout(
-    yaxis={"categoryorder": "total ascending"}
-)
-
-st.plotly_chart(airline_fig, use_container_width=True)
-
-st.subheader(f"Airport Cancellation Rates — {selected_year}")
-
-filtered_airports = airport_df[
-    (airport_df["year"] == selected_year)
-    & (airport_df["total_flights"] >= 100)
-].sort_values(
-    "cancellation_rate",
-    ascending=False
-).head(10)
-
-airport_fig = px.bar(
-    filtered_airports,
-    x="cancellation_rate",
-    y="airport",
-    orientation="h",
-    title="Top 10 Departure Airports by Cancellation Rate",
-    labels={
-        "cancellation_rate": "Cancellation Rate (%)",
-        "airport": "Departure Airport"
-    }
-)
-
-airport_fig.update_layout(
-    yaxis={"categoryorder": "total ascending"}
-)
-
-st.plotly_chart(airport_fig, use_container_width=True)
-
-
-st.divider()
-
-st.caption(
-    "Data represents sampled U.S. flight records for 2019 and 2020. "
-    "Differences in sample counts should not be interpreted as "
-    "exact nationwide changes in flight volume."
-)
+st.caption("This dashboard reports sampled records, not nationwide flight totals. Run analysis_pipeline.py to regenerate every table.")

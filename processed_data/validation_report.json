@@ -1,0 +1,41 @@
+{
+  "row_count": 1237023,
+  "rows_by_year": {
+    "2019": 757673,
+    "2020": 479350
+  },
+  "duplicate_rows": 0,
+  "duplicate_schedule_keys": 0,
+  "missing_required_fields": {
+    "airline": 0,
+    "arr_delay": 45104,
+    "cancellation_code": 1194672,
+    "cancelled": 0,
+    "crs_arr_time": 0,
+    "crs_dep_time": 0,
+    "dep_delay": 41785,
+    "dest": 0,
+    "distance": 0,
+    "fl_date": 0,
+    "origin": 0
+  },
+  "invalid_cancelled_values": 0,
+  "invalid_cancellation_codes": [],
+  "date_parse_failures": 0,
+  "years": [
+    2019,
+    2020
+  ],
+  "airlines_by_year": {
+    "2019": 17,
+    "2020": 17
+  },
+  "origins_by_year": {
+    "2019": 360,
+    "2020": 365
+  },
+  "routes_by_year": {
+    "2019": 6365,
+    "2020": 6337
+  }
+}
