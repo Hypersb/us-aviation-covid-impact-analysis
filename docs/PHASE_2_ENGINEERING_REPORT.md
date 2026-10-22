@@ -91,7 +91,7 @@ See [DATA_PROVENANCE.md](DATA_PROVENANCE.md). The principal blocker is the missi
 - No 2018–2023 data acquired.
 - No PostgreSQL load or benchmark results due to credentials.
 - No ML retraining, calibration, or dashboard redesign, as required.
-- No full Bronze/Silver/Gold run over the large files.
+- Bronze/Silver/Gold was executed over the current 2019–2020 files; expanded-year layers remain unavailable.
 - The raw files still lack checksums and immutable source metadata.
 
 ## Recommended next actions

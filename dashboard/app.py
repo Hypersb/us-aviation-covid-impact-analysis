@@ -21,6 +21,7 @@ def load_outputs() -> dict[str, pd.DataFrame | dict]:
         "a5_on_time_severe_delay", "a6_airline_reliability_changes",
         "a7_march_april_airports", "a7_march_april_routes",
         "cancellation_confidence_intervals", "cancellation_significance_test", "model_metrics",
+        "airport_resilience_monthly", "offline_drift_report",
     ]
     outputs = {name: pd.read_csv(DATA_DIR / f"{name}.csv") for name in names}
     outputs["validation"] = json.loads((DATA_DIR / "validation_report.json").read_text(encoding="utf-8"))
@@ -51,8 +52,8 @@ col2.metric("Cancelled flights", f"{cancelled:,}")
 col3.metric("Cancellation rate", f"{rate:.2f}%")
 col4.metric("On-time rate", f"{overall_on_time:.2f}%")
 
-tab_overview, tab_entities, tab_business, tab_stats, tab_quality = st.tabs(
-    ["Overview", "Airlines and airports", "Business questions", "Statistics and model", "Data quality"]
+tab_overview, tab_entities, tab_business, tab_research, tab_stats, tab_quality = st.tabs(
+    ["Overview", "Airlines and airports", "Business questions", "Airport resilience", "Statistics and model", "Data quality"]
 )
 
 with tab_overview:
@@ -87,6 +88,20 @@ with tab_business:
     st.subheader("March-April 2020 disruption: airports")
     st.dataframe(data["a7_march_april_airports"].query("year == 2020").nlargest(20, "cancelled_flights"),
                  use_container_width=True, hide_index=True)
+
+with tab_research:
+    st.subheader("Observed airport disruption and resilience")
+    st.caption("Same-month 2020 versus 2019 observed records. This is not a full post-pandemic recovery estimate.")
+    resilience = data["airport_resilience_monthly"]
+    st.dataframe(
+        resilience[resilience["month"].isin([3, 4])].sort_values(
+            "cancellation_rate_change_pp", ascending=False
+        ).head(25),
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.subheader("Offline distribution-shift diagnostics")
+    st.dataframe(data["offline_drift_report"], use_container_width=True, hide_index=True)
 
 with tab_stats:
     st.subheader("Inference")

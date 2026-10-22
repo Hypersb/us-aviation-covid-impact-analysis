@@ -4,3 +4,4 @@ scipy
 scikit-learn
 streamlit
 plotly
+psycopg[binary]
