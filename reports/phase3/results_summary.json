@@ -1,0 +1,144 @@
+{
+  "row_count": 1237023,
+  "rows_by_year": {
+    "2019": 757673,
+    "2020": 479350
+  },
+  "duplicate_rows": 0,
+  "duplicate_schedule_keys": 0,
+  "missing_required_fields": {
+    "airline": 0,
+    "arr_delay": 45104,
+    "cancellation_code": 1194672,
+    "cancelled": 0,
+    "crs_arr_time": 0,
+    "crs_dep_time": 0,
+    "dep_delay": 41785,
+    "dest": 0,
+    "distance": 0,
+    "fl_date": 0,
+    "origin": 0
+  },
+  "invalid_cancelled_values": 0,
+  "invalid_cancellation_codes": [],
+  "date_parse_failures": 0,
+  "years": [
+    2019,
+    2020
+  ],
+  "airlines_by_year": {
+    "2019": 17,
+    "2020": 17
+  },
+  "origins_by_year": {
+    "2019": 360,
+    "2020": 365
+  },
+  "routes_by_year": {
+    "2019": 6365,
+    "2020": 6337
+  },
+  "postgresql_row_counts": {
+    "flights_2019_new": 757673,
+    "flights_2020_new": 479350
+  },
+  "postgresql_annual_metrics": [
+    {
+      "year": 2019,
+      "scheduled_flights": 757673,
+      "cancelled_flights": 13594,
+      "valid_arrival_flights": 742096,
+      "on_time_flights": 600843,
+      "severe_delay_flights": 49488
+    },
+    {
+      "year": 2020,
+      "scheduled_flights": 479350,
+      "cancelled_flights": 28757,
+      "valid_arrival_flights": 449823,
+      "on_time_flights": 405752,
+      "severe_delay_flights": 12694
+    }
+  ],
+  "postgresql_monthly_rows": 24,
+  "common_airlines": [
+    "Alaska Airlines Inc.",
+    "Allegiant Air",
+    "American Airlines Inc.",
+    "Delta Air Lines Inc.",
+    "Endeavor Air Inc.",
+    "Envoy Air",
+    "ExpressJet Airlines LLC d/b/a aha!",
+    "Frontier Airlines Inc.",
+    "Hawaiian Airlines Inc.",
+    "JetBlue Airways",
+    "Mesa Airlines Inc.",
+    "PSA Airlines Inc.",
+    "Republic Airline",
+    "SkyWest Airlines Inc.",
+    "Southwest Airlines Co.",
+    "Spirit Air Lines",
+    "United Air Lines Inc."
+  ],
+  "common_airports_count": 355,
+  "common_routes_count": 5949,
+  "minimum_airport_thresholds": [
+    100,
+    500,
+    1000
+  ],
+  "inference": [
+    {
+      "metric": "cancellation_rate",
+      "count_2019": 13594,
+      "denominator_2019": 757673,
+      "count_2020": 28757,
+      "denominator_2020": 479350,
+      "rate_2019": 1.7941776993505114,
+      "rate_2020": 5.999165536664233,
+      "difference_pp": 4.2049878373137215,
+      "relative_change_pct": 234.3685265308959,
+      "ci_low_pp": 4.131417552452706,
+      "ci_high_pp": 4.278558122174737,
+      "z_statistic": 125.30393956674426,
+      "p_value": 0.0,
+      "effect_size_abs_pp": 4.2049878373137215
+    },
+    {
+      "metric": "on_time_rate",
+      "count_2019": 600843,
+      "denominator_2019": 742096,
+      "count_2020": 405752,
+      "denominator_2020": 449823,
+      "rate_2019": 80.96567020978418,
+      "rate_2020": 90.20259079682454,
+      "difference_pp": 9.236920587040354,
+      "relative_change_pct": 11.408440840552855,
+      "ci_low_pp": 9.11232193423955,
+      "ci_high_pp": 9.361519239841158,
+      "z_statistic": 134.8988471953086,
+      "p_value": 0.0,
+      "effect_size_abs_pp": 9.236920587040354
+    },
+    {
+      "metric": "severe_delay_rate",
+      "count_2019": 49488,
+      "denominator_2019": 742096,
+      "count_2020": 12694,
+      "denominator_2020": 449823,
+      "rate_2019": 6.668678984929173,
+      "rate_2020": 2.8219988751131,
+      "difference_pp": -3.8466801098160732,
+      "relative_change_pct": -57.68279022741005,
+      "ci_low_pp": -3.9212709560606256,
+      "ci_high_pp": -3.772089263571521,
+      "z_statistic": -91.54598416653067,
+      "p_value": 0.0,
+      "effect_size_abs_pp": 3.8466801098160732
+    }
+  ],
+  "delay_mann_whitney": {
+    "u": 198830268269.0,
+    "p": 0.0
+  }
+}

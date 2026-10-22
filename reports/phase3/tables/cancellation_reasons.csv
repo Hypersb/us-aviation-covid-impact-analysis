@@ -1,0 +1,8 @@
+year,cancellation_reason,cancelled_flights
+2019,Carrier,3836
+2019,NAS,2449
+2019,Weather,7309
+2020,Carrier,1924
+2020,NAS,470
+2020,Security,24221
+2020,Weather,2142
