@@ -251,21 +251,21 @@ The sharpest disruption signal is the concentration of security-coded cancellati
 
 ### A5 — On-time performance and severe delays
 
-On-time is defined as arrival delay below 15 minutes. Severe delay is defined as arrival delay of at least 60 minutes. These rates use operated flights only.
+On-time is defined as arrival delay below 15 minutes. Severe delay is defined as arrival delay of at least 60 minutes. These rates use operated flights with a valid arrival-delay observation; cancelled flights and operated flights without an arrival-delay observation are excluded from these delay denominators.
 
 Overall comparison:
 
 | Measure | 2019 | 2020 |
 |---|---:|---:|
-| On-time rate | approximately 80.3% | approximately 91.7% |
-| Severe-delay rate | approximately 6.7% | approximately 2.2% |
+| On-time rate | approximately 81.0% | approximately 90.2% |
+| Severe-delay rate | approximately 6.7% | approximately 2.8% |
 
 The monthly pattern shows:
 
 - 2020 on-time performance was higher than 2019 in every month in this sample.
 - 2020 severe-delay rates were lower than 2019 in every month.
 - This improvement among flights that operated occurred alongside a much higher cancellation rate.
-- April 2020 had a 41.62% cancellation rate, while the flights that operated had a 95.03% on-time rate and a 1.41% severe-delay rate.
+- April 2020 had a 41.62% cancellation rate, while operated flights with valid arrival-delay observations had a 95.16% on-time rate and a 1.41% severe-delay rate.
 
 This is an important selection effect: the flights that continued operating were not necessarily representative of all scheduled flights.
 
@@ -454,4 +454,3 @@ Notebook/final_aviation_analysis.ipynb
 - `sql/business_questions.sql`
 - `PROJECT_COMPLETION_REPORT.md`
 - Regenerated and newly created files in `processed_data/`
-

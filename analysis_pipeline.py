@@ -6,6 +6,7 @@ Run from the repository root:
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -35,6 +36,7 @@ REQUIRED_COLUMNS = {
     "dep_delay", "arr_delay", "cancelled", "cancellation_code", "distance",
 }
 REASON_LABELS = {"A": "Carrier", "B": "Weather", "C": "NAS", "D": "Security"}
+UNKNOWN_REASON = "Unknown"
 
 
 def load_flights() -> pd.DataFrame:
@@ -51,6 +53,10 @@ def load_flights() -> pd.DataFrame:
     flights["cancelled"] = pd.to_numeric(flights["cancelled"], errors="coerce")
     flights["cancelled_flag"] = flights["cancelled"].eq(1).astype(int)
     flights["cancellation_reason"] = flights["cancellation_code"].map(REASON_LABELS)
+    cancelled = flights["cancelled_flag"].eq(1)
+    flights.loc[cancelled, "cancellation_reason"] = (
+        flights.loc[cancelled, "cancellation_reason"].fillna(UNKNOWN_REASON)
+    )
     flights.loc[flights["cancelled_flag"].eq(0), "cancellation_reason"] = "Not cancelled"
     flights["route"] = flights["origin"].astype("string") + "-" + flights["dest"].astype("string")
     return flights
@@ -93,6 +99,7 @@ def rate_table(grouped: pd.core.groupby.DataFrameGroupBy) -> pd.DataFrame:
     result = grouped.agg(
         total_flights=("cancelled_flag", "size"),
         cancelled_flights=("cancelled_flag", "sum"),
+        valid_arrival_flights=("arr_delay", "count"),
         avg_departure_delay=("dep_delay", "mean"),
         avg_arrival_delay=("arr_delay", "mean"),
     ).reset_index()
@@ -111,12 +118,14 @@ def build_summaries(flights: pd.DataFrame) -> dict[str, pd.DataFrame]:
     routes = rate_table(flights.groupby(["year", "origin", "dest"], dropna=False))
 
     operated = flights[flights["cancelled_flag"].eq(0)].copy()
-    operated["on_time"] = operated["arr_delay"].lt(15)
-    operated["severe_delay"] = operated["arr_delay"].ge(60)
+    operated["valid_arrival"] = operated["arr_delay"].notna()
+    measured = operated[operated["valid_arrival"]].copy()
+    measured["on_time"] = measured["arr_delay"].lt(15)
+    measured["severe_delay"] = measured["arr_delay"].ge(60)
     performance = (
-        operated.groupby(["year", "month"])
+        measured.groupby(["year", "month"])
         .agg(
-            operated_flights=("on_time", "size"),
+            valid_arrival_flights=("on_time", "size"),
             on_time_flights=("on_time", "sum"),
             severe_delay_flights=("severe_delay", "sum"),
             avg_departure_delay=("dep_delay", "mean"),
@@ -124,9 +133,9 @@ def build_summaries(flights: pd.DataFrame) -> dict[str, pd.DataFrame]:
         )
         .reset_index()
     )
-    performance["on_time_rate"] = performance["on_time_flights"] / performance["operated_flights"] * 100
+    performance["on_time_rate"] = performance["on_time_flights"] / performance["valid_arrival_flights"] * 100
     performance["severe_delay_rate"] = (
-        performance["severe_delay_flights"] / performance["operated_flights"] * 100
+        performance["severe_delay_flights"] / performance["valid_arrival_flights"] * 100
     )
     return {
         "monthly_summary": monthly,
@@ -141,7 +150,7 @@ def business_questions(flights: pd.DataFrame, summaries: dict[str, pd.DataFrame]
     routes = summaries["route_summary"]
     route_wide = routes.pivot_table(
         index=["origin", "dest"], columns="year",
-        values=["total_flights", "cancellation_rate", "avg_arrival_delay"],
+        values=["total_flights", "valid_arrival_flights", "cancellation_rate", "avg_arrival_delay"],
     )
     route_wide.columns = [f"{a}_{b}" for a, b in route_wide.columns]
     route_wide = route_wide.reset_index()
@@ -153,7 +162,10 @@ def business_questions(flights: pd.DataFrame, summaries: dict[str, pd.DataFrame]
     a1 = comparable_routes[comparable_routes["total_flights_2019"].ge(30) & comparable_routes["total_flights_2020"].ge(30)].sort_values(
         "cancellation_rate_change", ascending=False
     ).head(100)
-    a2 = comparable_routes[comparable_routes["total_flights_2019"].ge(30) & comparable_routes["total_flights_2020"].ge(30)].sort_values(
+    a2 = comparable_routes[
+        comparable_routes["valid_arrival_flights_2019"].ge(30)
+        & comparable_routes["valid_arrival_flights_2020"].ge(30)
+    ].sort_values(
         "avg_arrival_delay_change", ascending=False
     ).head(100)
 
@@ -259,6 +271,13 @@ def modeling(flights: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--skip-modeling",
+        action="store_true",
+        help="Regenerate analytical outputs without fitting or rewriting model_metrics.csv.",
+    )
+    args = parser.parse_args()
     OUTPUT_DIR.mkdir(exist_ok=True)
     flights = load_flights()
     validation = validate(flights)
@@ -271,7 +290,8 @@ def main() -> None:
     ci, test = statistics(flights)
     ci.to_csv(OUTPUT_DIR / "cancellation_confidence_intervals.csv", index=False)
     test.to_csv(OUTPUT_DIR / "cancellation_significance_test.csv", index=False)
-    modeling(flights).to_csv(OUTPUT_DIR / "model_metrics.csv", index=False)
+    if not args.skip_modeling:
+        modeling(flights).to_csv(OUTPUT_DIR / "model_metrics.csv", index=False)
     print(f"Processed {len(flights):,} flights; outputs written to {OUTPUT_DIR}")
 
 

@@ -43,7 +43,7 @@ total = int(yearly["total_flights"].sum())
 cancelled = int(yearly["cancelled_flights"].sum())
 rate = cancelled / total * 100 if total else 0
 operated = data["performance_summary"]
-overall_on_time = operated[operated["year"].eq(year)]["on_time_flights"].sum() / operated[operated["year"].eq(year)]["operated_flights"].sum() * 100
+overall_on_time = operated[operated["year"].eq(year)]["on_time_flights"].sum() / operated[operated["year"].eq(year)]["valid_arrival_flights"].sum() * 100
 
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Sampled flights", f"{total:,}")
@@ -92,7 +92,7 @@ with tab_stats:
     st.subheader("Inference")
     st.dataframe(data["cancellation_confidence_intervals"], use_container_width=True, hide_index=True)
     st.dataframe(data["cancellation_significance_test"], use_container_width=True, hide_index=True)
-    st.caption("Intervals describe this sampled dataset. The z-test treats records as independent observations; sampling design limits nationwide inference.")
+    st.caption("Intervals describe this sampled dataset. Delay rates use operated flights with a valid arrival-delay observation. The z-test treats records as independent observations; sampling design limits nationwide inference.")
     st.subheader("Chronological cancellation prediction")
     st.dataframe(data["model_metrics"], use_container_width=True, hide_index=True)
     st.caption("Models train on 2019 and test on 2020. PR-AUC and calibration-sensitive Brier score are more informative than accuracy for this imbalanced target.")

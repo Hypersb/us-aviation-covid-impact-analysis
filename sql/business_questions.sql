@@ -24,8 +24,8 @@ SELECT origin, dest,
        AVG(arr_delay) FILTER (WHERE year = 2020 AND cancelled = 0) AS avg_arrival_delay_2020
 FROM flights
 GROUP BY origin, dest
-HAVING COUNT(*) FILTER (WHERE year = 2019) >= 30
-   AND COUNT(*) FILTER (WHERE year = 2020) >= 30
+HAVING COUNT(arr_delay) FILTER (WHERE year = 2019 AND cancelled = 0) >= 30
+   AND COUNT(arr_delay) FILTER (WHERE year = 2020 AND cancelled = 0) >= 30
 ORDER BY avg_arrival_delay_2020 - avg_arrival_delay_2019 DESC;
 
 -- A3/A4: cancellation reasons by year and month
@@ -37,8 +37,8 @@ ORDER BY year, month, cancelled_flights DESC;
 
 -- A5: on-time (<15 minutes) and severe-delay (>=60 minutes) rates
 SELECT year,
-       AVG((arr_delay < 15)::int) * 100 AS on_time_rate,
-       AVG((arr_delay >= 60)::int) * 100 AS severe_delay_rate
+       AVG((arr_delay < 15)::int) FILTER (WHERE arr_delay IS NOT NULL) * 100 AS on_time_rate,
+       AVG((arr_delay >= 60)::int) FILTER (WHERE arr_delay IS NOT NULL) * 100 AS severe_delay_rate
 FROM flights
 WHERE cancelled = 0
 GROUP BY year;
