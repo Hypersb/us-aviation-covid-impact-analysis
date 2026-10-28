@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.ticker import FuncFormatter, PercentFormatter
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "processed_data"
 OUTPUT = ROOT / "reports" / "figures"
 

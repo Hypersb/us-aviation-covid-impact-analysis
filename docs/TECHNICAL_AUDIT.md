@@ -26,13 +26,13 @@
 
 ### Code and configuration
 
-- [analysis_pipeline.py](../analysis_pipeline.py) is the executable source of truth.
+- [analysis_pipeline.py](../src/analysis_pipeline.py) is the executable source of truth.
 - [dashboard/app.py](../dashboard/app.py) reads materialized CSV outputs and presents the analysis.
 - [requirements.txt](../requirements.txt) lists pandas, NumPy, SciPy, scikit-learn, Streamlit, and Plotly.
 - [business_questions.sql](../sql/business_questions.sql) contains PostgreSQL-style equivalents for A1–A5.
-- The existing notebooks remain under [Notebook/](../Notebook/).
-- [PROJECT_PLAN.txt](../PROJECT_PLAN.txt) defines the original research questions and metric intentions.
-- [PROJECT_COMPLETION_REPORT.md](../PROJECT_COMPLETION_REPORT.md) records the prior implementation claims and limitations.
+- The existing notebooks remain under [notebooks/](../notebooks/).
+- [PROJECT_PLAN.txt](PROJECT_PLAN.txt) defines the original research questions and metric intentions.
+- [PROJECT_COMPLETION_REPORT.md](PROJECT_COMPLETION_REPORT.md) records the prior implementation claims and limitations.
 
 ### Raw data and generated outputs
 
@@ -49,15 +49,15 @@
 
 ### 3.1 Transformation audit
 
-**VERIFIED:** [analysis_pipeline.py:24-27](../analysis_pipeline.py#L24) defines:
+**VERIFIED:** [analysis_pipeline.py:24-27](../src/analysis_pipeline.py#L24) defines:
 
 ```python
 REASON_LABELS = {"A": "Carrier", "B": "Weather", "C": "NAS", "D": "Security"}
 ```
 
-**VERIFIED:** [analysis_pipeline.py:39-40](../analysis_pipeline.py#L39) maps `cancellation_code` to those labels and assigns `"Not cancelled"` only when `cancelled_flag == 0`. There is no code that recodes D, imputes cancellation reasons, or discards D records.
+**VERIFIED:** [analysis_pipeline.py:39-40](../src/analysis_pipeline.py#L39) maps `cancellation_code` to those labels and assigns `"Not cancelled"` only when `cancelled_flag == 0`. There is no code that recodes D, imputes cancellation reasons, or discards D records.
 
-**VERIFIED:** [analysis_pipeline.py:57-60](../analysis_pipeline.py#L57) validates unknown non-null cancellation codes, but it does not validate whether the cancellation reason agrees with an external BTS source or with other columns.
+**VERIFIED:** [analysis_pipeline.py:57-60](../src/analysis_pipeline.py#L57) validates unknown non-null cancellation codes, but it does not validate whether the cancellation reason agrees with an external BTS source or with other columns.
 
 ### 3.2 Raw counts reproduced
 
@@ -120,7 +120,7 @@ These are hypotheses, not findings. The cancellation delay-cause columns are nul
 
 ### 4.1 Current implementation
 
-**VERIFIED:** [analysis_pipeline.py:111-127](../analysis_pipeline.py#L111) filters to `cancelled_flag == 0`, defines `on_time = arr_delay < 15`, and aggregates `on_time_flights` and `operated_flights`.
+**VERIFIED:** [analysis_pipeline.py:111-127](../src/analysis_pipeline.py#L111) filters to `cancelled_flag == 0`, defines `on_time = arr_delay < 15`, and aggregates `on_time_flights` and `operated_flights`.
 
 **CONFIRMED DEFECT:** `operated_flights=("on_time", "size")` counts all operated rows, including rows where `arr_delay` is missing. Since `NaN < 15` is false, those rows reduce the numerator-to-denominator ratio. The code should define a valid-arrival mask and use only valid arrival observations for both the on-time and severe-delay denominators.
 
@@ -161,7 +161,7 @@ Using equal weights across common routes:
 
 ### 5.1 Wilson intervals
 
-**VERIFIED:** [analysis_pipeline.py:185-196](../analysis_pipeline.py#L185) implements the standard Wilson interval with `z = norm.ppf(0.975)`.
+**VERIFIED:** [analysis_pipeline.py:185-196](../src/analysis_pipeline.py#L185) implements the standard Wilson interval with `z = norm.ppf(0.975)`.
 
 **REPRODUCED:** The stored results are:
 
@@ -174,7 +174,7 @@ The interval calculation is mathematically correct for a binomial proportion und
 
 ### 5.2 Two-proportion z-test
 
-**VERIFIED:** [analysis_pipeline.py:197-204](../analysis_pipeline.py#L197) computes a pooled two-proportion z-test.
+**VERIFIED:** [analysis_pipeline.py:197-204](../src/analysis_pipeline.py#L197) computes a pooled two-proportion z-test.
 
 **REPRODUCED:** The result is:
 
@@ -201,7 +201,7 @@ The interval calculation is mathematically correct for a binomial proportion und
 
 ### 6.1 Split and leakage
 
-**VERIFIED:** [analysis_pipeline.py:207-216](../analysis_pipeline.py#L207) sorts by date, trains on dates before 2020-01-01, and tests on dates from 2020-01-01 onward. It caps the 2019 training sample at 250,000 rows using a fixed random seed.
+**VERIFIED:** [analysis_pipeline.py:207-216](../src/analysis_pipeline.py#L207) sorts by date, trains on dates before 2020-01-01, and tests on dates from 2020-01-01 onward. It caps the 2019 training sample at 250,000 rows using a fixed random seed.
 
 **VERIFIED:** The features are schedule/pre-departure fields: calendar fields, airline, origin, destination, scheduled times, and distance. Actual departure/arrival delays and cancellation reason are excluded.
 
@@ -283,7 +283,7 @@ The download interface is the appropriate place to select fields and monthly/yea
 
 ## 9. Confirmed defects
 
-1. **High — incorrect on-time/severe-delay denominators:** operated rows with missing `arr_delay` remain in `operated_flights`; see [analysis_pipeline.py:115-127](../analysis_pipeline.py#L115).
+1. **High — incorrect on-time/severe-delay denominators:** operated rows with missing `arr_delay` remain in `operated_flights`; see [analysis_pipeline.py:115-127](../src/analysis_pipeline.py#L115).
 2. **High — undocumented data provenance:** no source URL, extraction parameters, release date, sampling rule, checksum, or reconciliation record is stored for the raw CSVs.
 3. **Medium — unsupported causal interpretation risk:** the Security category is displayed as a reason label, but the project lacks source reconciliation and explicitly defined interpretation boundaries for the 2020 code-D shift.
 4. **Medium — inference overstatement risk:** the z-test treats records as independent and reports a near-zero p-value without cluster- or design-aware uncertainty.

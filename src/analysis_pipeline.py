@@ -1,7 +1,7 @@
 """Reproducible data preparation, business analysis, statistics, and modeling.
 
 Run from the repository root:
-    python analysis_pipeline.py
+    python src/analysis_pipeline.py
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ from sklearn.metrics import (
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "Data"
 OUTPUT_DIR = ROOT / "processed_data"
 REQUIRED_COLUMNS = {

@@ -16,15 +16,15 @@
 
 ### Data engineering
 
-- [ingest_bts.py](../ingest_bts.py): resumable, checksum-aware, idempotent monthly acquisition.
-- [data_layers.py](../data_layers.py): Bronze/Silver/Gold transformations.
-- [research_pipeline.py](../research_pipeline.py): airport-day/month panels, resilience comparisons, and offline drift diagnostics.
+- [ingest_bts.py](../src/ingest_bts.py): resumable, checksum-aware, idempotent monthly acquisition.
+- [data_layers.py](../src/data_layers.py): Bronze/Silver/Gold transformations.
+- [research_pipeline.py](../src/research_pipeline.py): airport-day/month panels, resilience comparisons, and offline drift diagnostics.
 - [DATA_PROVENANCE.md](DATA_PROVENANCE.md): source evidence, provenance gaps, and acquisition status.
 - [RESEARCH_METHOD.md](RESEARCH_METHOD.md): estimands, denominators, and research limitations.
 
 ### Research outputs actually generated
 
-Running `python research_pipeline.py` generated:
+Running `python src/research_pipeline.py` generated:
 
 - `processed_data/airport_day_panel.csv`: 143,882 rows.
 - `processed_data/airport_month_panel.csv`: 8,310 rows.
@@ -44,8 +44,8 @@ Created executable:
 - [analytical_queries.sql](../sql/analytical_queries.sql)
 - [research_queries.sql](../sql/research_queries.sql)
 - [benchmark.sql](../sql/benchmark.sql)
-- [load_postgres.py](../load_postgres.py)
-- [postgres_existing.py](../postgres_existing.py)
+- [load_postgres.py](../src/load_postgres.py)
+- [postgres_existing.py](../src/postgres_existing.py)
 - [integrate_existing.sql](../sql/integrate_existing.sql)
 - [validate_existing.sql](../sql/validate_existing.sql)
 - [benchmarks_existing.sql](../sql/benchmarks_existing.sql)
@@ -104,9 +104,9 @@ HTTP 200 ok
 
 ```powershell
 pytest -q
-python analysis_pipeline.py --skip-modeling
-python research_pipeline.py
-python data_layers.py --output-dir data_layers
+python src/analysis_pipeline.py --skip-modeling
+python src/research_pipeline.py
+python src/data_layers.py --output-dir data_layers
 streamlit run dashboard/app.py
 ```
 

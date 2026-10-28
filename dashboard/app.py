@@ -118,4 +118,4 @@ with tab_quality:
     st.info("Missing delay fields are expected for cancelled flights. No duplicate rows, duplicate schedule keys, invalid cancellation values, or invalid cancellation codes were found.")
 
 st.divider()
-st.caption("This dashboard reports sampled records, not nationwide flight totals. Run analysis_pipeline.py to regenerate every table.")
+st.caption("This dashboard reports sampled records, not nationwide flight totals. Run python src/analysis_pipeline.py to regenerate every table.")

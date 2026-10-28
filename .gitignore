@@ -6,3 +6,6 @@ data/*.csv
 __pycache__/
 .ipynb_checkpoints/
 .venv/
+.pytest_cache/
+data_layers/
+data_bronze/

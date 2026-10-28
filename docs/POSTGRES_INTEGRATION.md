@@ -12,7 +12,7 @@ The integration scripts do not import CSVs and do not create duplicate flight ta
 
 ## Secure connection
 
-The Python validator [postgres_existing.py](../postgres_existing.py) uses libpq environment variables:
+The Python validator [postgres_existing.py](../src/postgres_existing.py) uses libpq environment variables:
 
 ```powershell
 $env:PGHOST = "localhost"
@@ -20,7 +20,7 @@ $env:PGPORT = "5432"
 $env:PGDATABASE = "<existing aviation database>"
 $env:PGUSER = "<database user>"
 # Set PGPASSWORD only in the current secure process, or configure PGpassFile.
-python postgres_existing.py --json
+python src/postgres_existing.py --json
 ```
 
 Do not place passwords in source, `.env` files committed to Git, command history, or report output. On Windows, a supported `PGPASSFILE` is preferable to exposing a password in a command line.

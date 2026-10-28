@@ -11,7 +11,7 @@
 
 **VERIFIED:** The repository has no original download URL, BTS query parameters, export timestamp, provider release identifier, checksum, or sampling description for these files. Their current provenance therefore cannot be independently established from repository evidence.
 
-**VERIFIED:** The local transformation in [analysis_pipeline.py](../analysis_pipeline.py) adds year, month, day-of-week, cancellation flag/reason, and route. It does not alter the raw files.
+**VERIFIED:** The local transformation in [analysis_pipeline.py](../src/analysis_pipeline.py) adds year, month, day-of-week, cancellation flag/reason, and route. It does not alter the raw files.
 
 ## Official reference sources
 
@@ -41,7 +41,7 @@ The intended authoritative source is the Bureau of Transportation Statistics (BT
 
 ## Resumable acquisition design
 
-[ingest_bts.py](../ingest_bts.py) implements a manifest-driven downloader for monthly 2018–2023 partitions. It:
+[ingest_bts.py](../src/ingest_bts.py) implements a manifest-driven downloader for monthly 2018–2023 partitions. It:
 
 - requires an exact source URL per year-month;
 - supports optional expected SHA-256 checksums;
@@ -58,7 +58,7 @@ The [example manifest](../ingestion_manifest.example.json) intentionally contain
 
 ## Bronze/Silver/Gold record
 
-[data_layers.py](../data_layers.py) implements:
+[data_layers.py](../src/data_layers.py) implements:
 
 - **Bronze:** immutable copies of source CSV partitions;
 - **Silver:** typed dates/numeric cancellation values plus derived cancellation flag, month, day-of-week, and route;

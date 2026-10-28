@@ -43,7 +43,7 @@ The pipeline:
 Run it from the project root:
 
 ```powershell
-python analysis_pipeline.py
+python src/analysis_pipeline.py
 ```
 
 ### 2.2 SQL business analysis
@@ -415,7 +415,7 @@ From the project root:
 
 ```powershell
 pip install -r requirements.txt
-python analysis_pipeline.py
+python src/analysis_pipeline.py
 streamlit run dashboard/app.py
 ```
 
@@ -428,10 +428,10 @@ sql/business_questions.sql
 The existing notebooks remain available for exploratory context:
 
 ```text
-Notebook/analysis.ipynb
-Notebook/business_problems.ipynb
-Notebook/data_exploration.ipynb
-Notebook/final_aviation_analysis.ipynb
+notebooks/analysis.ipynb
+notebooks/business_problems.ipynb
+notebooks/data_exploration.ipynb
+notebooks/final_aviation_analysis.ipynb
 ```
 
 ## 11. Final project status

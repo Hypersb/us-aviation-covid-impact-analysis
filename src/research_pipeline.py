@@ -91,7 +91,7 @@ def drift_report(flights: pd.DataFrame) -> pd.DataFrame:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output-dir", type=Path, default=Path("processed_data"))
+    parser.add_argument("--output-dir", type=Path, default=Path(__file__).resolve().parents[1] / "processed_data")
     args = parser.parse_args()
     flights = load_flights()
     airport_day, airport_month = build_panels(flights)

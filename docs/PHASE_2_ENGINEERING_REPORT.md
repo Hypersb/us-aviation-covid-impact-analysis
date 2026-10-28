@@ -13,7 +13,7 @@ The current 2019–2020 source files were not independently proven to originate 
 
 ### Metric and grouping corrections
 
-**VERIFIED:** [analysis_pipeline.py](../analysis_pipeline.py) now records `valid_arrival_flights` and computes delay rates only from operated flights with non-null `arr_delay`.
+**VERIFIED:** [analysis_pipeline.py](../src/analysis_pipeline.py) now records `valid_arrival_flights` and computes delay rates only from operated flights with non-null `arr_delay`.
 
 **VERIFIED:** Route arrival-delay comparisons require at least 30 valid arrival-delay observations in each year. Cancellation-rate comparisons continue to use the 30 total-flight threshold.
 
@@ -21,13 +21,13 @@ The current 2019–2020 source files were not independently proven to originate 
 
 ### Resumable ingestion
 
-**IMPLEMENTED:** [ingest_bts.py](../ingest_bts.py) provides manifest-driven, checksum-aware, temporary-file-based, idempotent monthly acquisition for the 72 year-month partitions from 2018 through 2023.
+**IMPLEMENTED:** [ingest_bts.py](../src/ingest_bts.py) provides manifest-driven, checksum-aware, temporary-file-based, idempotent monthly acquisition for the 72 year-month partitions from 2018 through 2023.
 
 **ACTUAL RESULT:** 0 partitions acquired. The manifest example intentionally contains a placeholder because the repository has no exact BTS export URLs or checksums. This is a blocker, not a failed download represented as success.
 
 ### Bronze/Silver/Gold
 
-**IMPLEMENTED:** [data_layers.py](../data_layers.py) defines Bronze copies, Silver typed/derived CSVs, and Gold analytical outputs. It does not modify `Data/`.
+**IMPLEMENTED:** [data_layers.py](../src/data_layers.py) defines Bronze copies, Silver typed/derived CSVs, and Gold analytical outputs. It does not modify `Data/`.
 
 **ACTUAL RESULT:** Executed successfully against the current repository data in a temporary session directory: 2 Bronze partitions, 2 Silver partitions, and 15 Gold tables. The temporary outputs were removed after verification; the raw `Data/` files were unchanged.
 
@@ -39,7 +39,7 @@ The current 2019–2020 source files were not independently proven to originate 
 - [load.sql](../sql/load.sql)
 - [analytical_queries.sql](../sql/analytical_queries.sql)
 - [benchmark.sql](../sql/benchmark.sql)
-- [load_postgres.py](../load_postgres.py)
+- [load_postgres.py](../src/load_postgres.py)
 
 The SQL uses valid delay observations, explicit cancellation-reason grouping, and indexes suitable for before/after plan comparison.
 

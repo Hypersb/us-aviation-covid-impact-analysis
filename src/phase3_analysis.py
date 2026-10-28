@@ -20,7 +20,7 @@ from scipy.stats import mannwhitneyu, norm
 from analysis_pipeline import REASON_LABELS, load_flights, validate
 from postgres_existing import connection_kwargs
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "reports" / "phase3"
 MIN_AIRPORT = 100
 MIN_ROUTE = 30

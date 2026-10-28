@@ -10,6 +10,8 @@ import pandas as pd
 
 from analysis_pipeline import build_summaries, business_questions, load_flights, statistics
 
+ROOT = Path(__file__).resolve().parents[1]
+
 
 def write_bronze(source_dir: Path, bronze_dir: Path) -> list[Path]:
     bronze_dir.mkdir(parents=True, exist_ok=True)
@@ -59,8 +61,8 @@ def transform_gold(repository_root: Path, gold_dir: Path) -> list[Path]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--source-dir", type=Path, default=Path("Data"))
-    parser.add_argument("--output-dir", type=Path, default=Path("data_layers"))
+    parser.add_argument("--source-dir", type=Path, default=ROOT / "Data")
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "data_layers")
     args = parser.parse_args()
     bronze = write_bronze(args.source_dir, args.output_dir / "bronze")
     silver = transform_silver(args.output_dir / "bronze", args.output_dir / "silver")

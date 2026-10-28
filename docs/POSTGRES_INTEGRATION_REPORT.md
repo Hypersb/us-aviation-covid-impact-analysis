@@ -95,7 +95,7 @@ The first query used an index-only scan after integration. The second used the c
 
 ## Verification commands and results
 
-- `python postgres_existing.py --json`: passed.
+- `python src/postgres_existing.py --json`: passed.
 - `sql/validate_existing.sql`: passed.
 - `sql/integrate_existing.sql`: passed.
 - Comparable baseline benchmarks: passed.

@@ -39,9 +39,9 @@ The strongest business finding is that the shock was **not uniform**. Airline, a
 Data/flights_*.csv
         │
         ▼
-analysis_pipeline.py ──► processed_data/*.csv
+src/analysis_pipeline.py ──► processed_data/*.csv
         │                         │
-        ├── validation gates       ├── generate_figures.py ──► reports/figures/*.png
+        ├── validation gates       ├── src/generate_figures.py ──► reports/figures/*.png
         ├── business questions     └── dashboard/app.py
         └── statistical + ML outputs
 ```
@@ -53,10 +53,10 @@ analysis_pipeline.py ──► processed_data/*.csv
 python -m pip install -r requirements.txt
 
 # Materialize validated analytical tables and model outputs
-python analysis_pipeline.py
+python src/analysis_pipeline.py
 
 # Generate the README-ready figure set
-python generate_figures.py
+python src/generate_figures.py
 
 # Launch the interactive dashboard
 streamlit run dashboard/app.py
@@ -126,18 +126,22 @@ Only the primary execution and presentation surfaces are shown here:
 │   └── figures/
 ├── dashboard/
 │   └── app.py
-├── analysis_pipeline.py
-├── generate_figures.py
-├── phase3_analysis.py
-├── research_pipeline.py
-├── load_postgres.py
+├── src/
+│   ├── analysis_pipeline.py
+│   ├── generate_figures.py
+│   ├── phase3_analysis.py
+│   ├── research_pipeline.py
+│   ├── ingest_bts.py
+│   ├── data_layers.py
+│   ├── load_postgres.py
+│   └── postgres_existing.py
 ├── sql/
 │   └── analytical and validation queries
 ├── requirements.txt
 └── README.md
 ```
 
-Internal engineering reports, notebooks, and supporting research notes are intentionally omitted from this high-level presentation map. They remain part of the repository for reproducibility and auditability.
+Internal engineering reports and exploratory notebooks are intentionally omitted from this high-level presentation map. They remain in `docs/` and `notebooks/` for reproducibility and auditability.
 
 ## Reproducibility and limitations
 

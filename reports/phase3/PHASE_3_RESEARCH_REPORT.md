@@ -33,6 +33,6 @@ The sampling mechanism and national completeness are **UNVERIFIED**. Only 2019â€
 Configure the existing PostgreSQL libpq environment and run:
 
 ```powershell
-python phase3_analysis.py
+python src/phase3_analysis.py
 pytest -q
 ```
